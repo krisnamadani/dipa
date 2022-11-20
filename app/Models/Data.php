@@ -5,12 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Dataset extends Model
+class Data extends Model
 {
     use HasFactory;
 
-    protected $table = 'dataset';
+    protected $table = 'data';
     protected $guarded = [];
-    
-    public $timestamps = false;
 }
