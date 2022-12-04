@@ -13,9 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('dataset', function (Blueprint $table) {
+        Schema::create('data_uji', function (Blueprint $table) {
             $table->id();
-            $table->tinyInteger('waktu');
+            $table->tinyInteger('kode_jam');
             $table->tinyInteger('kode_hari');
             $table->string('output');
         });
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('dataset');
+        Schema::dropIfExists('data_uji');
     }
 };
