@@ -10,28 +10,42 @@ use Illuminate\Http\Request;
 
 class NaiveBayesController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $model = $this->naivebayes();
-        
         // uji 1 data
 
-        // $data_uji = [
-        //     'kode_jam' => '7',
-        //     'kode_hari' => 5,
-        // ];
+        if(!$request->has(['kode_jam', 'kode_hari'])) {
+            return response()->json([
+                'message' => 'request / input tidak lengkap',
+            ]);
+        }
 
-        // $uji = array();
+        $model = $this->naivebayes();
 
-        // foreach($model['output'] as $item) {
-        //     $uji[$item]['output'] = $model['probabilitas_output'][$item];
-        //     $uji[$item]['kode_jam'] = $model['probabilitas_kode_jam'][$data_uji['kode_jam']][$item];
-        //     $uji[$item]['kode_hari'] = $model['probabilitas_kode_hari'][$data_uji['kode_hari']][$item];
+        $data_uji = [
+            'kode_jam' => $request->get('kode_jam'),
+            'kode_hari' => $request->get('kode_hari'),
+        ];
 
-        //     $uji[$item] = array_product($uji[$item]);
-        // }
+        $uji = array();
 
-        // return json_decode(array_search(max($uji), $uji));
+        foreach($model['output'] as $item) {
+            $uji[$item]['output'] = $model['probabilitas_output'][$item];
+            $uji[$item]['kode_jam'] = $model['probabilitas_kode_jam'][$data_uji['kode_jam']][$item];
+            $uji[$item]['kode_hari'] = $model['probabilitas_kode_hari'][$data_uji['kode_hari']][$item];
+
+            $uji[$item] = array_product($uji[$item]);
+        }
+
+        $label = [
+            'teras_rumah', 'ruang_tamu', 'kamar_utama', 'kamar_kedua', 'dapur', 'toilet',
+        ];
+        
+        $output = json_decode(array_search(max($uji), $uji));
+
+        return response()->json([
+            'data' => array_combine($label, $output),
+        ]);
 
         
         // uji 168 data
@@ -69,62 +83,80 @@ class NaiveBayesController extends Controller
         //     'salah' => $salah,
         //     'akurasi' => $benar / $data_uji,
         // ];
+    }
 
-
+    public function test()
+    {
         // uji 168 data confussion matrix
 
-        // $semua_data_uji = DataUji::get();
+        $model = $this->naivebayes();
 
-        // $uji_semua = array();
+        $semua_data_uji = DataUji::get();
 
-        // $uji_semua['tp'] = 0;
-        // $uji_semua['fn'] = 0;
-        // $uji_semua['fp'] = 0;
-        // $uji_semua['tn'] = 0;
+        $uji_semua = array();
 
-        // foreach($semua_data_uji as $item) {
-        //     $data_uji = [
-        //         'kode_jam' => $item->kode_jam,
-        //         'kode_hari' => $item->kode_hari,
-        //     ];
+        $uji_semua['tp'] = 0;
+        $uji_semua['fn'] = 0;
+        $uji_semua['fp'] = 0;
+        $uji_semua['tn'] = 0;
+
+        foreach($semua_data_uji as $item) {
+            $data_uji = [
+                'kode_jam' => $item->kode_jam,
+                'kode_hari' => $item->kode_hari,
+            ];
     
-        //     $uji = array();
+            $uji = array();
     
-        //     foreach($model['output'] as $item2) {
-        //         $uji[$item2]['output'] = $model['probabilitas_output'][$item2];
-        //         $uji[$item2]['kode_jam'] = $model['probabilitas_kode_jam'][$data_uji['kode_jam']][$item2];
-        //         $uji[$item2]['kode_hari'] = $model['probabilitas_kode_hari'][$data_uji['kode_hari']][$item2];
+            foreach($model['output'] as $item2) {
+                $uji[$item2]['output'] = $model['probabilitas_output'][$item2];
+                $uji[$item2]['kode_jam'] = $model['probabilitas_kode_jam'][$data_uji['kode_jam']][$item2];
+                $uji[$item2]['kode_hari'] = $model['probabilitas_kode_hari'][$data_uji['kode_hari']][$item2];
     
-        //         $uji[$item2] = array_product($uji[$item2]);
-        //     }
+                $uji[$item2] = array_product($uji[$item2]);
+            }
 
-        //     $aktual = json_decode($item->output);
-        //     $prediksi = json_decode(array_search(max($uji), $uji));
+            $aktual = json_decode($item->output);
+            $prediksi = json_decode(array_search(max($uji), $uji));
 
-        //     for($i = 0; $i < count($aktual); $i++) {
-        //         if($aktual[$i] == 1 && $prediksi[$i] == 1) {
-        //             $uji_semua['tp'] += 1;
-        //         } elseif($aktual[$i] == 1 && $prediksi[$i] == 0) {
-        //             $uji_semua['fn'] += 1;
-        //         } elseif($aktual[$i] == 0 && $prediksi[$i] == 1) {
-        //             $uji_semua['fp'] += 1;
-        //         } elseif($aktual[$i] == 0 && $prediksi[$i] == 0) {
-        //             $uji_semua['tn'] += 1;
-        //         }
-        //     }
-        // }
+            for($i = 0; $i < count($aktual); $i++) {
+                if($aktual[$i] == 1 && $prediksi[$i] == 1) {
+                    $uji_semua['tp'] += 1;
+                } elseif($aktual[$i] == 1 && $prediksi[$i] == 0) {
+                    $uji_semua['fn'] += 1;
+                } elseif($aktual[$i] == 0 && $prediksi[$i] == 1) {
+                    $uji_semua['fp'] += 1;
+                } elseif($aktual[$i] == 0 && $prediksi[$i] == 0) {
+                    $uji_semua['tn'] += 1;
+                }
+            }
+        }
 
-        // $accuracy = ($uji_semua['tp'] + $uji_semua['tn']) / ($uji_semua['tp'] + $uji_semua['fn'] + $uji_semua['fp'] + $uji_semua['tn']);
-        // $precision = ($uji_semua['tp']) / ($uji_semua['tp'] + $uji_semua['fp']);
-        // $recall = ($uji_semua['tp']) / ($uji_semua['tp'] + $uji_semua['fn']);
-        // $f1_score = (2 * $recall * $precision) / ($recall + $precision);
+        $accuracy = ($uji_semua['tp'] + $uji_semua['tn']) / ($uji_semua['tp'] + $uji_semua['fn'] + $uji_semua['fp'] + $uji_semua['tn']);
+        $precision = ($uji_semua['tp']) / ($uji_semua['tp'] + $uji_semua['fp']);
+        $recall = ($uji_semua['tp']) / ($uji_semua['tp'] + $uji_semua['fn']);
+        $f1_score = (2 * $recall * $precision) / ($recall + $precision);
 
-        // return [
-        //     'accuracy' => $accuracy,
-        //     'precision' => $precision,
-        //     'recall' => $recall,
-        //     'f-1 score' => $f1_score,
-        // ];
+        $test = [
+            'data_latih' => $model['jumlah_data_latih'],
+            'data_uji' => $semua_data_uji->count(),
+        ];
+
+        $confussion_matrix = [
+            'tp' => $uji_semua['tp'],
+            'tn' => $uji_semua['tn'],
+            'fp' => $uji_semua['fp'],
+            'fn' => $uji_semua['fn'],
+            'accuracy' => $accuracy,
+            'precision' => $precision,
+            'recall' => $recall,
+            'f-1 score' => $f1_score,
+        ];
+
+        return response()->json([
+            'test' => $test,
+            'confussion_matrix' => $confussion_matrix,
+        ]);
     }
 
     public function naivebayes()
@@ -202,6 +234,7 @@ class NaiveBayesController extends Controller
         $model = array();
 
         $model = [
+            'jumlah_data_latih' => $data->count(),
             'output' => $output,
             'probabilitas_output' => $probabilitas_output,
             'probabilitas_kode_jam' => $probabilitas_kode_jam,

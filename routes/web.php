@@ -15,3 +15,4 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [NaiveBayesController::class, 'index'])->name('index');
+Route::get('/test', [NaiveBayesController::class, 'test'])->name('test');
