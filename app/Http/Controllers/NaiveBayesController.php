@@ -42,6 +42,10 @@ class NaiveBayesController extends Controller
         ];
         
         $output = json_decode(array_search(max($uji), $uji));
+        
+        $output = array_map(function($item) {
+            return $item == 1 ? 1 : 2;
+        }, $output);
 
         return response()->json([
             'data' => array_combine($label, $output),
