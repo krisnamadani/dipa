@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\NaiveBayesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,4 +17,13 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+Route::group(['prefix' => 'get-status'], function () {
+    Route::get('teras-rumah', [NaiveBayesController::class, 'terasRumah']);
+    Route::get('ruang-tamu', [NaiveBayesController::class, 'ruangTamu']);
+    Route::get('kamar-utama', [NaiveBayesController::class, 'kamarUtama']);
+    Route::get('kamar-kedua', [NaiveBayesController::class, 'kamarKedua']);
+    Route::get('dapur', [NaiveBayesController::class, 'dapur']);
+    Route::get('toilet', [NaiveBayesController::class, 'toilet']);
 });

@@ -255,4 +255,220 @@ class NaiveBayesController extends Controller
 
         return 0;
     }
+
+    public function terasRumah() {
+        $jam_sekarang = date('H');
+        $hari_sekarang = date('N');
+
+        $model = $this->naivebayes();
+
+        $data_uji = [
+            'kode_jam' => $jam_sekarang,
+            'kode_hari' => $hari_sekarang,
+        ];
+
+        $uji = array();
+
+        foreach($model['output'] as $item) {
+            $uji[$item]['output'] = $model['probabilitas_output'][$item];
+            $uji[$item]['kode_jam'] = $model['probabilitas_kode_jam'][$data_uji['kode_jam']][$item];
+            $uji[$item]['kode_hari'] = $model['probabilitas_kode_hari'][$data_uji['kode_hari']][$item];
+
+            $uji[$item] = array_product($uji[$item]);
+        }
+
+        $label = [
+            'teras_rumah', 'ruang_tamu', 'kamar_utama', 'kamar_kedua', 'dapur', 'toilet',
+        ];
+        
+        $output = json_decode(array_search(max($uji), $uji));
+        
+        $output = array_map(function($item) {
+            return $item == 1 ? 1 : 2;
+        }, $output);
+
+        $data = array_combine($label, $output);
+
+        return $data['teras_rumah'];
+    }
+
+    public function ruangTamu() {
+        $jam_sekarang = date('H');
+        $hari_sekarang = date('N');
+
+        $model = $this->naivebayes();
+
+        $data_uji = [
+            'kode_jam' => $jam_sekarang,
+            'kode_hari' => $hari_sekarang,
+        ];
+
+        $uji = array();
+
+        foreach($model['output'] as $item) {
+            $uji[$item]['output'] = $model['probabilitas_output'][$item];
+            $uji[$item]['kode_jam'] = $model['probabilitas_kode_jam'][$data_uji['kode_jam']][$item];
+            $uji[$item]['kode_hari'] = $model['probabilitas_kode_hari'][$data_uji['kode_hari']][$item];
+
+            $uji[$item] = array_product($uji[$item]);
+        }
+
+        $label = [
+            'teras_rumah', 'ruang_tamu', 'kamar_utama', 'kamar_kedua', 'dapur', 'toilet',
+        ];
+        
+        $output = json_decode(array_search(max($uji), $uji));
+        
+        $output = array_map(function($item) {
+            return $item == 1 ? 1 : 2;
+        }, $output);
+
+        $data = array_combine($label, $output);
+
+        return $data['ruang_tamu'];
+    }
+
+    public function kamarUtama() {
+        $jam_sekarang = date('H');
+        $hari_sekarang = date('N');
+
+        $model = $this->naivebayes();
+
+        $data_uji = [
+            'kode_jam' => $jam_sekarang,
+            'kode_hari' => $hari_sekarang,
+        ];
+
+        $uji = array();
+
+        foreach($model['output'] as $item) {
+            $uji[$item]['output'] = $model['probabilitas_output'][$item];
+            $uji[$item]['kode_jam'] = $model['probabilitas_kode_jam'][$data_uji['kode_jam']][$item];
+            $uji[$item]['kode_hari'] = $model['probabilitas_kode_hari'][$data_uji['kode_hari']][$item];
+
+            $uji[$item] = array_product($uji[$item]);
+        }
+
+        $label = [
+            'teras_rumah', 'ruang_tamu', 'kamar_utama', 'kamar_kedua', 'dapur', 'toilet',
+        ];
+        
+        $output = json_decode(array_search(max($uji), $uji));
+        
+        $output = array_map(function($item) {
+            return $item == 1 ? 1 : 2;
+        }, $output);
+
+        $data = array_combine($label, $output);
+
+        return $data['kamar_utama'];
+    }
+
+    public function kamarKedua() {
+        $jam_sekarang = date('H');
+        $hari_sekarang = date('N');
+
+        $model = $this->naivebayes();
+
+        $data_uji = [
+            'kode_jam' => $jam_sekarang,
+            'kode_hari' => $hari_sekarang,
+        ];
+
+        $uji = array();
+
+        foreach($model['output'] as $item) {
+            $uji[$item]['output'] = $model['probabilitas_output'][$item];
+            $uji[$item]['kode_jam'] = $model['probabilitas_kode_jam'][$data_uji['kode_jam']][$item];
+            $uji[$item]['kode_hari'] = $model['probabilitas_kode_hari'][$data_uji['kode_hari']][$item];
+
+            $uji[$item] = array_product($uji[$item]);
+        }
+
+        $label = [
+            'teras_rumah', 'ruang_tamu', 'kamar_utama', 'kamar_kedua', 'dapur', 'toilet',
+        ];
+        
+        $output = json_decode(array_search(max($uji), $uji));
+        
+        $output = array_map(function($item) {
+            return $item == 1 ? 1 : 2;
+        }, $output);
+
+        $data = array_combine($label, $output);
+
+        return $data['kamar_kedua'];
+    }
+
+    public function dapur() {
+        $jam_sekarang = date('H');
+        $hari_sekarang = date('N');
+
+        $model = $this->naivebayes();
+
+        $data_uji = [
+            'kode_jam' => $jam_sekarang,
+            'kode_hari' => $hari_sekarang,
+        ];
+
+        $uji = array();
+
+        foreach($model['output'] as $item) {
+            $uji[$item]['output'] = $model['probabilitas_output'][$item];
+            $uji[$item]['kode_jam'] = $model['probabilitas_kode_jam'][$data_uji['kode_jam']][$item];
+            $uji[$item]['kode_hari'] = $model['probabilitas_kode_hari'][$data_uji['kode_hari']][$item];
+
+            $uji[$item] = array_product($uji[$item]);
+        }
+
+        $label = [
+            'teras_rumah', 'ruang_tamu', 'kamar_utama', 'kamar_kedua', 'dapur', 'toilet',
+        ];
+        
+        $output = json_decode(array_search(max($uji), $uji));
+        
+        $output = array_map(function($item) {
+            return $item == 1 ? 1 : 2;
+        }, $output);
+
+        $data = array_combine($label, $output);
+
+        return $data['dapur'];
+    }
+
+    public function toilet() {
+        $jam_sekarang = date('H');
+        $hari_sekarang = date('N');
+
+        $model = $this->naivebayes();
+
+        $data_uji = [
+            'kode_jam' => $jam_sekarang,
+            'kode_hari' => $hari_sekarang,
+        ];
+
+        $uji = array();
+
+        foreach($model['output'] as $item) {
+            $uji[$item]['output'] = $model['probabilitas_output'][$item];
+            $uji[$item]['kode_jam'] = $model['probabilitas_kode_jam'][$data_uji['kode_jam']][$item];
+            $uji[$item]['kode_hari'] = $model['probabilitas_kode_hari'][$data_uji['kode_hari']][$item];
+
+            $uji[$item] = array_product($uji[$item]);
+        }
+
+        $label = [
+            'teras_rumah', 'ruang_tamu', 'kamar_utama', 'kamar_kedua', 'dapur', 'toilet',
+        ];
+        
+        $output = json_decode(array_search(max($uji), $uji));
+        
+        $output = array_map(function($item) {
+            return $item == 1 ? 1 : 2;
+        }, $output);
+
+        $data = array_combine($label, $output);
+
+        return $data['toilet'];
+    }
 }
